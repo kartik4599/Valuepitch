@@ -7,15 +7,6 @@ import {
   NavigationMenuLink,
 } from "./ui/navigation-menu";
 import { PiPackageFill } from "react-icons/pi";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
 
 const Header = () => {
@@ -24,7 +15,7 @@ const Header = () => {
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2 font-semibold">
           <PiPackageFill className="size-7" />
-          <span className="text-xl font-semibold">Valuepitch</span>
+          <span className="text-xl font-semibold font-mono">Valuepitch</span>
         </div>
         <NavigationMenu>
           <NavigationMenuList>

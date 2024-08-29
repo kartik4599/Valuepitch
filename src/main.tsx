@@ -9,6 +9,7 @@ import ClientManagement from "./components/ClientManagement/ClientManagement";
 import { ProtectedRoute, UnProtectedRoute } from "./components/RouteComponent";
 import UserManagement from "./components/UserManagement/UserManagement";
 import MISComponent from "./components/Reporting/MIS";
+import LoginPage from "./components/LoginPage";
 
 const router = createBrowserRouter([
   {
@@ -24,7 +25,7 @@ const router = createBrowserRouter([
       },
       {
         element: <UnProtectedRoute />,
-        children: [{ path: "/login", element: <div>Up-Protected</div> }],
+        children: [{ path: "/login", element: <LoginPage /> }],
       },
     ],
   },

@@ -21,7 +21,7 @@ const ClientManagement = () => {
   return (
     <>
       <main className="h-screen flex-1 p-4 md:p-6">
-        <div className="mx-auto max-w-[1200px] grid gap-6">
+        <div className="mx-auto max-w-7xl grid gap-6">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold">Client Management</h1>
             <Button
