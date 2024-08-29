@@ -19,6 +19,8 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { modalType } from "./ClientManagement";
+import { IoMdEye, IoMdEyeOff } from "react-icons/io";
+import { useEffect, useState } from "react";
 
 interface ClientModalProps {
   modelstate: {
@@ -70,13 +72,20 @@ const getTitleandSubtitle = (modalType?: modalType) => {
 
 const ClientModal = ({ modelstate, setModelstate }: ClientModalProps) => {
   const open = Boolean(modelstate);
-  const { title, subtitle, button } = getTitleandSubtitle(
-    modelstate?.modalType
-  );
+  const [showPassword, setShowPassword] = useState(false);
+  const [{ title, button, subtitle }, setModelData] = useState({
+    title: "",
+    subtitle: "",
+    button: "",
+  });
+
+  useEffect(() => {
+    setModelData(getTitleandSubtitle(modelstate?.modalType));
+  }, [modelstate]);
 
   return (
     <Dialog open={open} onOpenChange={() => setModelstate(null)}>
-      <DialogContent>
+      <DialogContent className="p-0">
         <Card className="w-full max-w-2xl max-h-[700px] overflow-y-auto border-none">
           <CardHeader>
             <CardTitle>{title}</CardTitle>
@@ -93,6 +102,21 @@ const ClientModal = ({ modelstate, setModelstate }: ClientModalProps) => {
                   <div className="grid gap-2">
                     <Label htmlFor="email">Email</Label>
                     <Input id="email" type="email" placeholder="Enter email" />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="email">Password</Label>
+                    <div className="relative">
+                      <Input
+                        id="email"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Enter password"
+                      />
+                      <div
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                        {showPassword ? <IoMdEyeOff /> : <IoMdEye />}
+                      </div>
+                    </div>
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor="phone">Phone</Label>
