@@ -8,6 +8,7 @@ import {
 import ClientManagement from "./components/ClientManagement/ClientManagement";
 import { ProtectedRoute, UnProtectedRoute } from "./components/RouteComponent";
 import UserManagement from "./components/UserManagement/UserManagement";
+import MISComponent from "./components/Reporting/MIS";
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,7 @@ const router = createBrowserRouter([
         children: [
           { path: "/client", element: <ClientManagement /> },
           { path: "/user", element: <UserManagement /> },
+          { path: "/mis-report", element: <MISComponent /> },
           { path: "*", element: <Navigate to={"/client"} /> },
         ],
       },

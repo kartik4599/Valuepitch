@@ -60,88 +60,26 @@ const Header = () => {
               </NavigationMenuContent>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <NavigationMenuTrigger>Admin Controls</NavigationMenuTrigger>
+              <NavigationMenuTrigger>Reporting</NavigationMenuTrigger>
               <NavigationMenuContent>
                 <div className="grid w-[400px] p-2">
                   <NavigationMenuLink asChild>
-                    <div className="group grid h-auto w-full items-center justify-start gap-1 rounded-md bg-background p-4 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50">
-                      <div className="text-sm font-medium leading-none group-hover:underline">
-                        Manage Roles
+                    <Link to={"/mis-report"}>
+                      <div className="group grid h-auto w-full items-center justify-start gap-1 rounded-md bg-background p-4 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50">
+                        <div className="text-sm font-medium leading-none group-hover:underline">
+                          Management Information System
+                        </div>
+                        <div className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          View operation activity and engagement metrics.
+                        </div>
                       </div>
-                      <div className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                        Assign and manage user roles and permissions.
-                      </div>
-                    </div>
-                  </NavigationMenuLink>
-                  <NavigationMenuLink asChild>
-                    <div className="group grid h-auto w-full items-center justify-start gap-1 rounded-md bg-background p-4 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50">
-                      <div className="text-sm font-medium leading-none group-hover:underline">
-                        Audit Logs
-                      </div>
-                      <div className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                        Review user activity and system events.
-                      </div>
-                    </div>
-                  </NavigationMenuLink>
-                </div>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuTrigger>Data Reporting</NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <div className="grid w-[400px] p-2">
-                  <NavigationMenuLink asChild>
-                    <div className="group grid h-auto w-full items-center justify-start gap-1 rounded-md bg-background p-4 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50">
-                      <div className="text-sm font-medium leading-none group-hover:underline">
-                        User Analytics
-                      </div>
-                      <div className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                        View user activity and engagement metrics.
-                      </div>
-                    </div>
-                  </NavigationMenuLink>
-                  <NavigationMenuLink asChild>
-                    <div className="group grid h-auto w-full items-center justify-start gap-1 rounded-md bg-background p-4 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50">
-                      <div className="text-sm font-medium leading-none group-hover:underline">
-                        Sales Reports
-                      </div>
-                      <div className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                        Review sales data and revenue trends.
-                      </div>
-                    </div>
+                    </Link>
                   </NavigationMenuLink>
                 </div>
               </NavigationMenuContent>
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
-      </div>
-      <div className="flex items-center gap-2">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              size="icon"
-              className="overflow-hidden rounded-full">
-              <img
-                src="https://plus.unsplash.com/premium_photo-1672239496290-5061cfee7ebb?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Ym95JTIwd2l0aCUyMGdsYXNzZXN8ZW58MHx8MHx8fDA%3D"
-                width={36}
-                height={36}
-                alt="Avatar"
-                className="overflow-hidden rounded-full"
-                style={{ aspectRatio: "36/36", objectFit: "cover" }}
-              />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>Support</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Logout</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
       </div>
     </header>
   );
