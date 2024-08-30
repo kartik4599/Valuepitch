@@ -21,6 +21,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { modalType } from "./ClientManagement";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { ClientForm, cn, employeeFormResolver } from "@/lib/utils";
+import { toast } from "sonner";
+import { createClient } from "@/lib/server";
 
 interface ClientModalProps {
   modelstate: {
@@ -79,7 +83,26 @@ const ClientModal = ({ modelstate, setModelstate }: ClientModalProps) => {
     button: "",
   });
 
+  const { handleSubmit, formState, register, setValue, getValues, reset } =
+    useForm<ClientForm>({
+      resolver: employeeFormResolver,
+    });
+  const { errors } = formState as unknown as {
+    errors: { [key: string]: string };
+  };
+  const submitHandler = async (payload: ClientForm) => {
+    try {
+      const data = await createClient(payload);
+
+      toast.success(data.message);
+      setModelstate(null);
+    } catch (e) {
+      toast.error("Error Occured while creating Client");
+    }
+  };
+
   useEffect(() => {
+    reset();
     setModelData(getTitleandSubtitle(modelstate?.modalType));
   }, [modelstate]);
 
@@ -93,23 +116,51 @@ const ClientModal = ({ modelstate, setModelstate }: ClientModalProps) => {
           </CardHeader>
           {modelstate?.modalType !== "delete" && (
             <CardContent>
-              <form className="grid gap-6">
+              <form
+                className="grid gap-6"
+                onSubmit={handleSubmit(submitHandler)}>
                 <div className="grid gap-4">
                   <div className="grid gap-2">
-                    <Label htmlFor="name">Client Name</Label>
-                    <Input id="name" placeholder="Enter client name" />
+                    <Label
+                      htmlFor="name"
+                      className={cn(errors.name && "text-red-500")}>
+                      Client Name
+                    </Label>
+                    <Input
+                      id="name"
+                      placeholder="Enter client name"
+                      {...register("name")}
+                    />
+                    <span className="text-red-500 text-sm">{errors?.name}</span>
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="Enter email" />
+                    <Label
+                      htmlFor="email"
+                      className={cn(errors.email && "text-red-500")}>
+                      Email
+                    </Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="Enter email"
+                      {...register("email")}
+                    />
+                    <span className="text-red-500 text-sm">
+                      {errors?.email}
+                    </span>
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="email">Password</Label>
+                    <Label
+                      htmlFor="email"
+                      className={cn(errors.password && "text-red-500")}>
+                      Password
+                    </Label>
                     <div className="relative">
                       <Input
                         id="email"
                         type={showPassword ? "text" : "password"}
                         placeholder="Enter password"
+                        {...register("password")}
                       />
                       <div
                         onClick={() => setShowPassword(!showPassword)}
@@ -117,14 +168,25 @@ const ClientModal = ({ modelstate, setModelstate }: ClientModalProps) => {
                         {showPassword ? <IoMdEyeOff /> : <IoMdEye />}
                       </div>
                     </div>
+                    <span className="text-red-500 text-sm">
+                      {errors?.password}
+                    </span>
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="phone">Phone</Label>
+                    <Label
+                      htmlFor="phone"
+                      className={cn(errors.phone && "text-red-500")}>
+                      Phone
+                    </Label>
                     <Input
                       id="phone"
                       type="tel"
                       placeholder="Enter phone number"
+                      {...register("phone")}
                     />
+                    <span className="text-red-500 text-sm">
+                      {errors?.phone}
+                    </span>
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor="address">Address</Label>
@@ -132,17 +194,33 @@ const ClientModal = ({ modelstate, setModelstate }: ClientModalProps) => {
                       id="address"
                       rows={3}
                       placeholder="Enter address"
+                      {...register("address")}
                     />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="grid gap-2">
-                    <Label htmlFor="name">Industry Name</Label>
-                    <Input id="name" placeholder="Enter industry name" />
+                    <Label
+                      htmlFor="name"
+                      className={cn(errors.industryName && "text-red-500")}>
+                      Industry Name
+                    </Label>
+                    <Input
+                      placeholder="Enter industry name"
+                      {...register("industryName")}
+                    />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="industry">Industry Type</Label>
-                    <Select>
+                    <Label
+                      htmlFor="industry"
+                      className={cn(errors.industryType && "text-red-500")}>
+                      Industry Type
+                    </Label>
+                    <Select
+                      value={getValues("industryType")}
+                      onValueChange={(value) =>
+                        setValue("industryType", value)
+                      }>
                       <SelectTrigger>
                         <SelectValue placeholder="Select industry" />
                       </SelectTrigger>
@@ -161,8 +239,16 @@ const ClientModal = ({ modelstate, setModelstate }: ClientModalProps) => {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="grid gap-2">
-                    <Label htmlFor="company-size">Company Size</Label>
-                    <Select>
+                    <Label
+                      htmlFor="company-size"
+                      className={cn(errors.industrySize && "text-red-500")}>
+                      Company Size
+                    </Label>
+                    <Select
+                      value={getValues("industrySize")}
+                      onValueChange={(value) =>
+                        setValue("industrySize", value)
+                      }>
                       <SelectTrigger>
                         <SelectValue placeholder="Select company size" />
                       </SelectTrigger>
@@ -179,7 +265,11 @@ const ClientModal = ({ modelstate, setModelstate }: ClientModalProps) => {
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor="website">Website</Label>
-                    <Input id="website" placeholder="Enter website URL" />
+                    <Input
+                      id="website"
+                      placeholder="Enter website URL"
+                      {...register("site")}
+                    />
                   </div>
                 </div>
                 <div className="grid gap-2">
@@ -188,21 +278,22 @@ const ClientModal = ({ modelstate, setModelstate }: ClientModalProps) => {
                     id="notes"
                     rows={3}
                     placeholder="Enter any additional notes"
+                    {...register("notes")}
                   />
                 </div>
+                <Button type="submit" className="ml-auto">
+                  {button}
+                </Button>
               </form>
             </CardContent>
           )}
-          <CardFooter>
-            <Button
-              variant={
-                modelstate?.modalType === "delete" ? "destructive" : "default"
-              }
-              type="submit"
-              className="ml-auto">
-              {button}
-            </Button>
-          </CardFooter>
+          {modelstate?.modalType === "delete" && (
+            <CardFooter>
+              <Button variant={"destructive"} type="submit" className="ml-auto">
+                {button}
+              </Button>
+            </CardFooter>
+          )}
         </Card>
       </DialogContent>
     </Dialog>

@@ -9,9 +9,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
-import { modalType } from "./ClientManagement";
+import { ClientData, modalType } from "./ClientManagement";
 
 interface ClientRowProps {
+  data: ClientData;
   setModelstate: React.Dispatch<
     React.SetStateAction<{
       modalType: modalType;
@@ -20,25 +21,14 @@ interface ClientRowProps {
   >;
 }
 
-const ClientRow = ({ setModelstate }: ClientRowProps) => {
+const ClientRow = ({ setModelstate, data }: ClientRowProps) => {
   return (
     <TableRow>
-      <TableCell className="font-medium">Bob Johnson</TableCell>
-      <TableCell>bob@example.com</TableCell>
+      <TableCell className="font-medium">{data.name}</TableCell>
+      <TableCell>{data.email}</TableCell>
+      <TableCell>{data.industry.name}</TableCell>
       <TableCell>
-        <Badge variant="outline" className="bg-green-500 text-red-50">
-          Admin
-        </Badge>
-      </TableCell>
-      <TableCell>
-        <Badge variant="outline" className="bg-green-500 text-red-50">
-          Admin
-        </Badge>
-      </TableCell>
-      <TableCell>
-        <Badge variant="outline" className="bg-red-500 text-red-50">
-          Suspended
-        </Badge>
+        <Badge variant="outline">{data.industry.type}</Badge>
       </TableCell>
       <TableCell className="text-right">
         <TooltipProvider delayDuration={100}>

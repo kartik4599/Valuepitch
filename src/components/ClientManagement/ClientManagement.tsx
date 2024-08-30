@@ -9,14 +9,38 @@ import { Button } from "../ui/button";
 import ClientModal from "./ClientModal";
 import { useState } from "react";
 import ClientRow from "./ClientRow";
+import useSwr from "swr";
+import { fetcher } from "@/lib/server";
+import { PiSpinnerGapThin } from "react-icons/pi";
 
 export type modalType = "create" | "edit" | "view" | "delete";
 
+export interface ClientData {
+  id: string;
+  name: string;
+  email: string;
+  industry: {
+    name: string;
+    id: string;
+    type: string;
+  };
+}
+
 const ClientManagement = () => {
+  const {
+    data: clientData,
+    isLoading,
+    mutate,
+  } = useSwr<ClientData[]>("/client", fetcher);
+
   const [modelstate, setModelstate] = useState<{
     modalType: modalType;
     data: any;
   } | null>(null);
+
+  if (isLoading) {
+    return <PiSpinnerGapThin className="h-8 w-8 animate-spin" />;
+  }
 
   return (
     <>
@@ -37,13 +61,14 @@ const ClientManagement = () => {
                   <TableHead>Client</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Industry</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead>Industry Type</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <ClientRow setModelstate={setModelstate} />
+                {clientData?.map((data) => (
+                  <ClientRow key={data.id} data={data} setModelstate={setModelstate} />
+                ))}
               </TableBody>
             </Table>
           </div>

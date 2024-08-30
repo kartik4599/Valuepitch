@@ -1,5 +1,5 @@
 import axios from "axios";
-import { SignInForm } from "./utils";
+import { ClientForm, SignInForm } from "./utils";
 
 const baseURL = "http://localhost:4500";
 
@@ -10,6 +10,11 @@ export const protectedRequest = () => {
     baseURL,
     headers,
   });
+};
+
+export const fetcher = async (path: string) => {
+  const { data } = await protectedRequest().get(path);
+  return data.data;
 };
 
 export const loginAccount = async (payload: SignInForm) => {
@@ -26,5 +31,10 @@ export const getReportData = async (type: string) => {
   const { data } = await protectedRequest().get("/report", {
     params: { type },
   });
+  return data;
+};
+
+export const createClient = async (payload: ClientForm) => {
+  const { data } = await protectedRequest().post("/client", payload);
   return data;
 };
