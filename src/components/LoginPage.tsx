@@ -10,6 +10,7 @@ import { loginAccount } from "@/lib/server";
 import { toast } from "sonner";
 import { loginUser } from "@/redux/user-slice";
 import { useDispatch } from "react-redux";
+import { addProfile } from "@/redux/profile-slice";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -24,10 +25,11 @@ const LoginPage = () => {
   const loginHandler = async (payload: SignInForm) => {
     try {
       setloading(true);
-      const { token, data } = await loginAccount(payload);
+      const { token, data, profile } = await loginAccount(payload);
       localStorage.setItem("token", token);
       toast.success("Logged In Succefully");
       dispatch(loginUser(data));
+      dispatch(addProfile(profile));
     } catch (e: any) {
       const message = e?.response?.data?.message || "Error Occured";
       toast.error(message);
