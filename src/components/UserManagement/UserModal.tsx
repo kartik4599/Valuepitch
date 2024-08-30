@@ -15,6 +15,7 @@ import { modalType } from "../ClientManagement/ClientManagement";
 import { ComboboxDemo } from "../ui/combobox";
 import { useEffect, useState } from "react";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 
 interface ClientModalProps {
   modelstate: {
@@ -119,6 +120,32 @@ const UserModal = ({ modelstate, setModelstate }: ClientModalProps) => {
                       type="tel"
                       placeholder="Enter phone number"
                     />
+                  </div>
+                  <div className="grid gap-2">
+                    <RadioGroup
+                      // onValueChange={field.onChange}
+                      // value="user"
+                      className="flex flex-col space-y-1">
+                      <Label>User Role</Label>
+                      <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="admin" id="admin" />
+                          <Label
+                            htmlFor="admin"
+                            className="font-normal cursor-pointer">
+                            Admin
+                          </Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="user" id="user" />
+                          <Label
+                            htmlFor="user"
+                            className="font-normal cursor-pointer">
+                            User
+                          </Label>
+                        </div>
+                      </div>
+                    </RadioGroup>
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor="industry">Industry</Label>

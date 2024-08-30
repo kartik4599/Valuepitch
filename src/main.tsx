@@ -10,9 +10,18 @@ import { ProtectedRoute, UnProtectedRoute } from "./components/RouteComponent";
 import UserManagement from "./components/UserManagement/UserManagement";
 import MISComponent from "./components/Reporting/MIS";
 import LoginPage from "./components/LoginPage";
+import App from "./app";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
+import ProfilePage from "./components/ProfilePage";
 
 const router = createBrowserRouter([
   {
+    element: (
+      <Provider store={store}>
+        <App />
+      </Provider>
+    ),
     children: [
       {
         element: <ProtectedRoute />,
@@ -20,6 +29,7 @@ const router = createBrowserRouter([
           { path: "/client", element: <ClientManagement /> },
           { path: "/user", element: <UserManagement /> },
           { path: "/mis-report", element: <MISComponent /> },
+          { path: "/profile", element: <ProfilePage /> },          
           { path: "*", element: <Navigate to={"/client"} /> },
         ],
       },
