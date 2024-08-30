@@ -5,8 +5,41 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Chart } from "../Chart";
+import useSWR from "swr";
+import { getReportData } from "@/lib/server";
+import { useState } from "react";
+
+interface Info {
+  totalSuccess: number;
+  successPercentage: number;
+  totalErrors: number;
+  errorPercentage: number;
+  totalValidationErrors: number;
+  validationPercentage: number;
+  totalUnauthorizedErrors: number;
+  unauthorizedPercentage: number;
+  totalServerError: number;
+  serverPercentage: number;
+}
+
+export interface Chartinfo {
+  date: string;
+  success: number;
+  error: number;
+}
+
+interface Chartdata {
+  info: Info;
+  chartinfo: Chartinfo[];
+}
 
 export default function MISComponent() {
+  const [timeRange, setTimeRange] = useState("90d");
+  const { data, error, isLoading } = useSWR<Chartdata>(
+    timeRange,
+    getReportData
+  );
+
   return (
     <div className="container mx-auto px-4 py-12 md:px-6 lg:px-8">
       <h1 className="text-3xl font-bold mb-8">MIS Report</h1>
@@ -15,8 +48,12 @@ export default function MISComponent() {
           <CardHeader>
             <CardDescription>Successful Operations</CardDescription>
             <CardTitle>
-              <span className="text-4xl font-bold">2,345</span>
-              <span className="text-muted-foreground ml-2">(87%)</span>
+              <span className="text-4xl font-bold">
+                {data?.info.totalSuccess}
+              </span>
+              <span className="text-muted-foreground ml-2">
+                ({data?.info.successPercentage.toFixed(1)} %)
+              </span>
             </CardTitle>
           </CardHeader>
         </Card>
@@ -24,29 +61,52 @@ export default function MISComponent() {
           <CardHeader>
             <CardDescription>Errors</CardDescription>
             <CardTitle>
-              <span className="text-4xl font-bold">345</span>
-              <span className="text-muted-foreground ml-2">(13%)</span>
+              <span className="text-4xl font-bold">
+                {data?.info.totalErrors}
+              </span>
+              <span className="text-muted-foreground ml-2">
+                ({data?.info.errorPercentage.toFixed(1)}%)
+              </span>
             </CardTitle>
           </CardHeader>
         </Card>
         <Card>
           <CardHeader>
             <CardDescription>Error Categories</CardDescription>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
               <div>
                 <h4 className="text-lg font-semibold">Validation</h4>
-                <p className="text-muted-foreground">145 (42%)</p>
+                <p className="text-muted-foreground">
+                  {data?.info.totalValidationErrors} (
+                  {data?.info.validationPercentage.toFixed(1)}%)
+                </p>
               </div>
               <div>
                 <h4 className="text-lg font-semibold">Server</h4>
-                <p className="text-muted-foreground">200 (58%)</p>
+                <p className="text-muted-foreground">
+                  {data?.info.totalServerError} (
+                  {data?.info.serverPercentage.toFixed(1)}%)
+                </p>
+              </div>
+              <div>
+                <h4 className="text-lg font-semibold">Unauthorized</h4>
+                <p className="text-muted-foreground">
+                  {data?.info.totalUnauthorizedErrors} (
+                  {data?.info.unauthorizedPercentage.toFixed(1)}%)
+                </p>
               </div>
             </div>
           </CardHeader>
         </Card>
       </div>
       <div className="mt-12">
-        <Chart />
+        {!(isLoading || error) && data && (
+          <Chart
+            chartinfo={data.chartinfo}
+            setTimeRange={setTimeRange}
+            timeRange={timeRange}
+          />
+        )}
       </div>
     </div>
   );

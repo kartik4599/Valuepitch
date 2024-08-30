@@ -21,3 +21,10 @@ export const getMyData = async () => {
   const { data } = await protectedRequest().get("/me");
   return data;
 };
+
+export const getReportData = async (type: string) => {
+  const { data } = await protectedRequest().get("/report", {
+    params: { type },
+  });
+  return data;
+};
