@@ -9,6 +9,7 @@ import useSWR from "swr";
 import { getReportData } from "@/lib/server";
 import { useState } from "react";
 import AnimatedNumbers from "react-animated-numbers";
+import xlsx from "json-as-xlsx";
 interface Info {
   totalSuccess: number;
   successPercentage: number;
@@ -39,6 +40,26 @@ export default function MISComponent() {
     timeRange,
     getReportData
   );
+
+  const downloadFile = () => {
+    try {
+      let exceldata = [
+        {
+          sheet: "Adults",
+          columns: [
+            { label: "Date", value: "date" },
+            { label: "Successful Operation", value: "success" },
+            { label: "Failed Operation", value: "error" },
+          ],
+          content: data?.chartinfo,
+        },
+      ];
+
+      xlsx(exceldata as any, { fileName: "Operations" });
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-12 md:px-6 lg:px-8">
@@ -106,6 +127,7 @@ export default function MISComponent() {
       <div className="mt-12">
         {!(isLoading || error) && data && (
           <Chart
+            downloadHandler={downloadFile}
             chartinfo={data.chartinfo}
             setTimeRange={setTimeRange}
             timeRange={timeRange}

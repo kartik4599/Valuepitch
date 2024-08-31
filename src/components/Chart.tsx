@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Chartinfo } from "./Reporting/MIS";
+import { Button } from "./ui/button";
 
 const chartConfig = {
   success: {
@@ -38,16 +39,23 @@ interface ChartProps {
   timeRange: string;
   setTimeRange: React.Dispatch<React.SetStateAction<string>>;
   chartinfo: Chartinfo[];
+  downloadHandler: () => void;
 }
 
-export function Chart({ timeRange, setTimeRange, chartinfo }: ChartProps) {
+export function Chart({
+  timeRange,
+  setTimeRange,
+  chartinfo,
+  downloadHandler,
+}: ChartProps) {
   return (
     <Card>
-      <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
+      <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
           <CardTitle>Management Information System</CardTitle>
           <CardDescription>Showing total reports</CardDescription>
         </div>
+        <Button onClick={downloadHandler}>Download</Button>
         <Select value={timeRange} onValueChange={setTimeRange}>
           <SelectTrigger
             className="w-[160px] rounded-lg sm:ml-auto"
