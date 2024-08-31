@@ -9,7 +9,7 @@ import { Toaster } from "sonner";
 import { addProfile } from "./redux/profile-slice";
 import socket from "socket.io-client";
 
-const endpoint = "https://valuepitch.onrender.com";
+const endpoint = "http://localhost:4500/";
 
 const App = () => {
   const user = useSelector((state: RootState) => state.user);

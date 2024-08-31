@@ -31,6 +31,7 @@ import {
   updateClient,
 } from "@/lib/server";
 import { KeyedMutator } from "swr";
+import { PiSpinnerGapThin } from "react-icons/pi";
 
 interface ClientModalProps {
   modelstate: {
@@ -88,7 +89,7 @@ const ClientModal = ({
 }: ClientModalProps) => {
   const open = Boolean(modelstate);
   const [showPassword, setShowPassword] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const [{ title, button, subtitle }, setModelData] = useState({
     title: "",
     subtitle: "",
@@ -106,6 +107,7 @@ const ClientModal = ({
 
   const submitHandler = async (payload: ClientForm) => {
     try {
+      setLoading(true);
       if (modelstate?.modalType === "create") {
         const data = await createClient(payload);
         toast.success(data.message);
@@ -119,11 +121,14 @@ const ClientModal = ({
     } catch (e: any) {
       const message = e?.response?.data?.message || "Error Occured";
       toast.error(message);
+    } finally {
+      setLoading(false);
     }
   };
 
   const deleteHandler = async () => {
     try {
+      setLoading(true);
       const data = await deleteClient(modelstate?.data || "");
       toast.success(data.message);
       mutate();
@@ -131,21 +136,29 @@ const ClientModal = ({
     } catch (e: any) {
       const message = e?.response?.data?.message || "Error Occured";
       toast.error(message);
+    } finally {
+      setLoading(false);
     }
   };
 
   const preFillData = async (id: string) => {
-    const { data } = await getClientDetail(id);
-    setValue("name", data.name);
-    setValue("email", data.email);
-    setValue("password", data.password);
-    setValue("phone", data.phone);
-    setValue("address", data.address);
-    setValue("industryName", data.industry.name);
-    setValue("industrySize", data.industry.size);
-    setValue("industryType", data.industry.type);
-    setValue("site", data.industry.site);
-    setValue("notes", data.industry.notes);
+    try {
+      setLoading(true);
+      const { data } = await getClientDetail(id);
+      setValue("name", data.name);
+      setValue("email", data.email);
+      setValue("password", data.password);
+      setValue("phone", data.phone);
+      setValue("address", data.address);
+      setValue("industryName", data.industry.name);
+      setValue("industrySize", data.industry.size);
+      setValue("industryType", data.industry.type);
+      setValue("site", data.industry.site);
+      setValue("notes", data.industry.notes);
+    } catch (e) {
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -166,8 +179,10 @@ const ClientModal = ({
       <DialogContent className="p-0">
         <Card className="w-full max-w-2xl max-h-[700px] overflow-y-auto border-none">
           <CardHeader>
-            <CardTitle>{title}</CardTitle>
-            <CardDescription>{subtitle} </CardDescription>
+            <CardTitle>{loading ? "Loading..." : title}</CardTitle>
+            <CardDescription>
+              {loading ? "Please wait..." : subtitle}{" "}
+            </CardDescription>
           </CardHeader>
           {modelstate?.modalType !== "delete" && (
             <CardContent>
@@ -179,8 +194,7 @@ const ClientModal = ({
                     <div className="grid gap-2">
                       <Label
                         htmlFor="name"
-                        className={cn(errors.name && "text-red-500")}
-                        >
+                        className={cn(errors.name && "text-red-500")}>
                         Client Name
                       </Label>
                       <Input
@@ -343,7 +357,11 @@ const ClientModal = ({
                     />
                   </div>
                   <Button type="submit" className="ml-auto">
-                    {button}
+                    {loading ? (
+                      <PiSpinnerGapThin className="h-5 w-5 animate-spin" />
+                    ) : (
+                      button
+                    )}
                   </Button>
                 </fieldset>
               </form>
@@ -356,7 +374,11 @@ const ClientModal = ({
                 variant={"destructive"}
                 type="submit"
                 className="ml-auto">
-                {button}
+                {loading ? (
+                  <PiSpinnerGapThin className="h-5 w-5 animate-spin" />
+                ) : (
+                  button
+                )}
               </Button>
             </CardFooter>
           )}

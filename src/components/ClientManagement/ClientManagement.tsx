@@ -39,7 +39,11 @@ const ClientManagement = () => {
   } | null>(null);
 
   if (isLoading) {
-    return <PiSpinnerGapThin className="h-8 w-8 animate-spin" />;
+    return (
+      <div className="w-full flex items-center justify-center">
+        <PiSpinnerGapThin className="h-8 w-8 animate-spin" />;
+      </div>
+    );
   }
 
   return (

@@ -8,7 +8,7 @@ import { Chart } from "../Chart";
 import useSWR from "swr";
 import { getReportData } from "@/lib/server";
 import { useState } from "react";
-
+import AnimatedNumbers from "react-animated-numbers";
 interface Info {
   totalSuccess: number;
   successPercentage: number;
@@ -47,9 +47,11 @@ export default function MISComponent() {
         <Card>
           <CardHeader>
             <CardDescription>Successful Operations</CardDescription>
-            <CardTitle>
+            <CardTitle className="flex items-end">
               <span className="text-4xl font-bold">
-                {data?.info.totalSuccess}
+                {data?.info.totalSuccess && (
+                  <AnimatedNumbers animateToNumber={data?.info.totalSuccess} />
+                )}
               </span>
               <span className="text-muted-foreground ml-2">
                 ({data?.info.successPercentage.toFixed(1)} %)
@@ -60,9 +62,11 @@ export default function MISComponent() {
         <Card>
           <CardHeader>
             <CardDescription>Errors</CardDescription>
-            <CardTitle>
+            <CardTitle className="flex items-end">
               <span className="text-4xl font-bold">
-                {data?.info.totalErrors}
+                {data?.info.totalErrors && (
+                  <AnimatedNumbers animateToNumber={data?.info.totalErrors} />
+                )}
               </span>
               <span className="text-muted-foreground ml-2">
                 ({data?.info.errorPercentage.toFixed(1)}%)

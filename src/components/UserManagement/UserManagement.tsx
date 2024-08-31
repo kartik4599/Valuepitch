@@ -12,6 +12,7 @@ import UserRow from "./UserRow";
 import UserModal from "./UserModal";
 import { fetcher } from "@/lib/server";
 import useSwr from "swr";
+import { PiSpinnerGapThin } from "react-icons/pi";
 
 export interface UserData {
   id: string;
@@ -27,7 +28,19 @@ const UserManagement = () => {
     data: string;
   } | null>(null);
 
-  const { data: userData, mutate } = useSwr<UserData[]>("/user", fetcher);
+  const {
+    data: userData,
+    mutate,
+    isLoading,
+  } = useSwr<UserData[]>("/user", fetcher);
+
+  if (isLoading) {
+    return (
+      <div className="w-full flex items-center justify-center">
+        <PiSpinnerGapThin className="h-8 w-8 animate-spin" />;
+      </div>
+    );
+  }
 
   return (
     <>

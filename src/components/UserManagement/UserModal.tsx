@@ -27,6 +27,7 @@ import {
   updateUser,
 } from "@/lib/server";
 import { toast } from "sonner";
+import { PiSpinnerGapThin } from "react-icons/pi";
 
 interface ClientModalProps {
   modelstate: {
@@ -80,6 +81,7 @@ const getTitleandSubtitle = (modalType?: modalType) => {
 const UserModal = ({ modelstate, setModelstate, mutate }: ClientModalProps) => {
   const open = Boolean(modelstate);
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [{ title, button, subtitle }, setModelData] = useState({
     title: "",
     subtitle: "",
@@ -98,18 +100,25 @@ const UserModal = ({ modelstate, setModelstate, mutate }: ClientModalProps) => {
   };
 
   const preFillData = async (id: string) => {
-    const { data } = await getUserDetail(id);
-    setValue("name", data.name);
-    setValue("email", data.email);
-    setValue("password", data.password);
-    setValue("phone", data.phone);
-    setValue("address", data.address);
-    setValue("role", data.role);
-    setValue("industryId", data.industry.id);
+    try {
+      setLoading(true);
+      const { data } = await getUserDetail(id);
+      setValue("name", data.name);
+      setValue("email", data.email);
+      setValue("password", data.password);
+      setValue("phone", data.phone);
+      setValue("address", data.address);
+      setValue("role", data.role);
+      setValue("industryId", data.industry.id);
+    } catch (e) {
+    } finally {
+      setLoading(false);
+    }
   };
 
   const submitHandler = async (payload: UserForm) => {
     try {
+      setLoading(true);
       if (modelstate?.modalType === "create") {
         const data = await createUser(payload);
         toast.success(data.message);
@@ -123,11 +132,14 @@ const UserModal = ({ modelstate, setModelstate, mutate }: ClientModalProps) => {
     } catch (e: any) {
       const message = e?.response?.data?.message || "Error Occured";
       toast.error(message);
+    } finally {
+      setLoading(false);
     }
   };
 
   const deleteHandler = async () => {
     try {
+      setLoading(true);
       const data = await deleteUser(modelstate?.data || "");
       toast.success(data.message);
       mutate();
@@ -135,6 +147,8 @@ const UserModal = ({ modelstate, setModelstate, mutate }: ClientModalProps) => {
     } catch (e: any) {
       const message = e?.response?.data?.message || "Error Occured";
       toast.error(message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -156,8 +170,10 @@ const UserModal = ({ modelstate, setModelstate, mutate }: ClientModalProps) => {
       <DialogContent className="p-0">
         <Card className="w-full max-w-2xl max-h-[700px] overflow-y-auto border-none">
           <CardHeader>
-            <CardTitle>{title}</CardTitle>
-            <CardDescription>{subtitle} </CardDescription>
+            <CardTitle>{loading ? "Loading..." : title}</CardTitle>
+            <CardDescription>
+              {loading ? "Please wait..." : subtitle}{" "}
+            </CardDescription>
           </CardHeader>
           {modelstate?.modalType !== "delete" && (
             <CardContent>
@@ -294,7 +310,11 @@ const UserModal = ({ modelstate, setModelstate, mutate }: ClientModalProps) => {
                     />
                   </div>
                   <Button type="submit" className="ml-auto">
-                    {button}
+                    {loading ? (
+                      <PiSpinnerGapThin className="h-5 w-5 animate-spin" />
+                    ) : (
+                      button
+                    )}
                   </Button>
                 </fieldset>
               </form>
@@ -307,7 +327,11 @@ const UserModal = ({ modelstate, setModelstate, mutate }: ClientModalProps) => {
                 variant={"destructive"}
                 type="submit"
                 className="ml-auto">
-                {button}
+                {loading ? (
+                  <PiSpinnerGapThin className="h-5 w-5 animate-spin" />
+                ) : (
+                  button
+                )}
               </Button>
             </CardFooter>
           )}

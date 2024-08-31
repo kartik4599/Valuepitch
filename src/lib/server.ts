@@ -1,8 +1,8 @@
 import axios from "axios";
 import { ClientForm, SignInForm, UserForm } from "./utils";
 
-export const baseURL = "http://localhost:4500/api";
-// export const baseURL = "/api";
+// export const baseURL = "http://localhost:4500/api";
+export const baseURL = "/api";
 
 export const unProtectedRequest = axios.create({ baseURL });
 export const protectedRequest = () => {
