@@ -55,7 +55,7 @@ const LoginPage = () => {
             Valuepitch
           </h2>
           <p className={"mt-4 text-lg leading-8 text-primary-foreground"}>
-            Securely store and share your passwords and secret files with ease.
+            Create and manage your Client and User with ease.
           </p>
         </div>
       </div>
