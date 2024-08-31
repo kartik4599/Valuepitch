@@ -50,7 +50,7 @@ export function ComboboxDemo({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-full p-0">
-        <Command filter={filterFunction}>
+        <Command filter={filterFunction as any}>
           <CommandInput placeholder={placeholder + " ..."} />
           <CommandList>
             <CommandEmpty>No company found.</CommandEmpty>
