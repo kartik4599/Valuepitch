@@ -38,3 +38,18 @@ export const createClient = async (payload: ClientForm) => {
   const { data } = await protectedRequest().post("/client", payload);
   return data;
 };
+
+export const getClientDetail = async (id: string) => {
+  const { data } = await protectedRequest().get("/client/" + id);
+  return data;
+};
+
+export const updateClient = async (id: string, payload: ClientForm) => {
+  const { data } = await protectedRequest().put("/client/" + id, payload);
+  return data;
+};
+
+export const deleteClient = async (id: string) => {
+  const { data } = await protectedRequest().delete("/client/" + id);
+  return data;
+};

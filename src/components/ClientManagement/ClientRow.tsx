@@ -16,7 +16,7 @@ interface ClientRowProps {
   setModelstate: React.Dispatch<
     React.SetStateAction<{
       modalType: modalType;
-      data: any;
+      data: string;
     } | null>
   >;
 }
@@ -36,7 +36,9 @@ const ClientRow = ({ setModelstate, data }: ClientRowProps) => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  onClick={() => setModelstate({ data: {}, modalType: "view" })}
+                  onClick={() =>
+                    setModelstate({ data: data.id, modalType: "view" })
+                  }
                   variant="outline"
                   size="icon">
                   <FaRegEye className="h-4 w-4" />
@@ -47,7 +49,9 @@ const ClientRow = ({ setModelstate, data }: ClientRowProps) => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  onClick={() => setModelstate({ data: {}, modalType: "edit" })}
+                  onClick={() =>
+                    setModelstate({ data: data.id, modalType: "edit" })
+                  }
                   variant="outline"
                   size="icon">
                   <MdEdit className="h-4 w-4" />
@@ -59,7 +63,7 @@ const ClientRow = ({ setModelstate, data }: ClientRowProps) => {
               <TooltipTrigger asChild>
                 <Button
                   onClick={() =>
-                    setModelstate({ data: {}, modalType: "delete" })
+                    setModelstate({ data: data.id, modalType: "delete" })
                   }
                   variant="outline"
                   size="icon">

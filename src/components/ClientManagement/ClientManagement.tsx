@@ -35,7 +35,7 @@ const ClientManagement = () => {
 
   const [modelstate, setModelstate] = useState<{
     modalType: modalType;
-    data: any;
+    data: string;
   } | null>(null);
 
   if (isLoading) {
@@ -49,7 +49,7 @@ const ClientManagement = () => {
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold">Client Management</h1>
             <Button
-              onClick={() => setModelstate({ data: {}, modalType: "create" })}
+              onClick={() => setModelstate({ data: "", modalType: "create" })}
               size="sm">
               Add Client
             </Button>
@@ -67,14 +67,22 @@ const ClientManagement = () => {
               </TableHeader>
               <TableBody>
                 {clientData?.map((data) => (
-                  <ClientRow key={data.id} data={data} setModelstate={setModelstate} />
+                  <ClientRow
+                    key={data.id}
+                    data={data}
+                    setModelstate={setModelstate}
+                  />
                 ))}
               </TableBody>
             </Table>
           </div>
         </div>
       </main>
-      <ClientModal modelstate={modelstate} setModelstate={setModelstate} />
+      <ClientModal
+        mutate={mutate}
+        modelstate={modelstate}
+        setModelstate={setModelstate}
+      />
     </>
   );
 };
