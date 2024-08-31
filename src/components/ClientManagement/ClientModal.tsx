@@ -158,7 +158,7 @@ const ClientModal = ({
       preFillData(modelstate.data);
     }
 
-    return reset();
+    return () => reset();
   }, [modelstate]);
 
   return (
@@ -179,7 +179,8 @@ const ClientModal = ({
                     <div className="grid gap-2">
                       <Label
                         htmlFor="name"
-                        className={cn(errors.name && "text-red-500")}>
+                        className={cn(errors.name && "text-red-500")}
+                        >
                         Client Name
                       </Label>
                       <Input

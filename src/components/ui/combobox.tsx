@@ -18,7 +18,7 @@ import {
 
 interface ComboboxDemoProps {
   placeholder: string;
-  options: string[];
+  options: { id: string; name: string }[];
   setValue: (value: string) => void;
   value: string;
 }
@@ -31,6 +31,12 @@ export function ComboboxDemo({
 }: ComboboxDemoProps) {
   const [open, setOpen] = React.useState(false);
 
+  const filterFunction = (value: string, search: string) => {
+    const option = options.find(({ id }) => id === value);
+    if (!option) return false;
+    return option.name.toLowerCase().includes(search.toLowerCase());
+  };
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -39,20 +45,20 @@ export function ComboboxDemo({
           role="combobox"
           aria-expanded={open}
           className={cn("w-full justify-between", !value && "text-slate-500")}>
-          {value || placeholder}
+          {options.find(({ id }) => id === value)?.name || placeholder}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-full p-0">
-        <Command>
+        <Command filter={filterFunction}>
           <CommandInput placeholder={placeholder + " ..."} />
           <CommandList>
             <CommandEmpty>No company found.</CommandEmpty>
             <CommandGroup>
-              {options.map((option) => (
+              {options.map(({ id, name }) => (
                 <CommandItem
-                  key={option}
-                  value={option}
+                  key={id}
+                  value={id}
                   onSelect={(currentValue) => {
                     setValue(currentValue);
                     setOpen(false);
@@ -60,10 +66,10 @@ export function ComboboxDemo({
                   <Check
                     className={cn(
                       "mr-2 h-4 w-4",
-                      value === option ? "opacity-100" : "opacity-0"
+                      value === id ? "opacity-100" : "opacity-0"
                     )}
                   />
-                  {option}
+                  {name}
                 </CommandItem>
               ))}
             </CommandGroup>

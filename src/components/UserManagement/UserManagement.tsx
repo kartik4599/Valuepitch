@@ -10,12 +10,24 @@ import { useState } from "react";
 import { modalType } from "../ClientManagement/ClientManagement";
 import UserRow from "./UserRow";
 import UserModal from "./UserModal";
+import { fetcher } from "@/lib/server";
+import useSwr from "swr";
+
+export interface UserData {
+  id: string;
+  name: string;
+  email: string;
+  role: "admin" | "user";
+  industry?: { name: string; id: string; type: string };
+}
 
 const UserManagement = () => {
   const [modelstate, setModelstate] = useState<{
     modalType: modalType;
-    data: any;
+    data: string;
   } | null>(null);
+
+  const { data: userData, mutate } = useSwr<UserData[]>("/user", fetcher);
 
   return (
     <>
@@ -24,7 +36,7 @@ const UserManagement = () => {
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold">User Management</h1>
             <Button
-              onClick={() => setModelstate({ data: {}, modalType: "create" })}
+              onClick={() => setModelstate({ data: "", modalType: "create" })}
               size="sm">
               Add User
             </Button>
@@ -36,18 +48,29 @@ const UserManagement = () => {
                   <TableHead>Name</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Role</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead>Industry</TableHead>
+                  <TableHead>Industry Type</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <UserRow setModelstate={setModelstate} />
+                {userData?.map((user) => (
+                  <UserRow
+                    key={user.id}
+                    user={user}
+                    setModelstate={setModelstate}
+                  />
+                ))}
               </TableBody>
             </Table>
           </div>
         </div>
       </main>
-      <UserModal modelstate={modelstate} setModelstate={setModelstate} />
+      <UserModal
+        mutate={mutate}
+        modelstate={modelstate}
+        setModelstate={setModelstate}
+      />
     </>
   );
 };

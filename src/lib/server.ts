@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ClientForm, SignInForm } from "./utils";
+import { ClientForm, SignInForm, UserForm } from "./utils";
 
 const baseURL = "http://localhost:4500";
 
@@ -51,5 +51,25 @@ export const updateClient = async (id: string, payload: ClientForm) => {
 
 export const deleteClient = async (id: string) => {
   const { data } = await protectedRequest().delete("/client/" + id);
+  return data;
+};
+
+export const createUser = async (payload: UserForm) => {
+  const { data } = await protectedRequest().post("/user", payload);
+  return data;
+};
+
+export const getUserDetail = async (id: string) => {
+  const { data } = await protectedRequest().get("/user/" + id);
+  return data;
+};
+
+export const updateUser = async (id: string, payload: UserForm) => {
+  const { data } = await protectedRequest().put("/user/" + id, payload);
+  return data;
+};
+
+export const deleteUser = async (id: string) => {
+  const { data } = await protectedRequest().delete("/user/" + id);
   return data;
 };

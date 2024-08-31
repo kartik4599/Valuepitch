@@ -66,3 +66,36 @@ export const employeeFormResolver: Resolver<ClientForm> = async (values) => {
     errors,
   };
 };
+
+export type UserForm = {
+  name: string;
+  email: string;
+  password: string;
+  phone: string;
+  role: "admin" | "user";
+  industryId: string;
+  address?: string;
+};
+
+export const userFormResolver: Resolver<UserForm> = async (values) => {
+  const errors: any = {};
+
+  if (!values.name) errors.name = "Name is required";
+  if (!values.email) errors.email = "Email is required";
+  if (
+    values.email &&
+    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+  )
+    errors.email = "Invalid email address";
+  if (!values.password) errors.password = "Password is required";
+  if (values.password && values.password.length < 6)
+    errors.password = "Password should be at least 6 characters long";
+  if (!values.phone) errors.phone = "Phone is required";
+  if (!values.role) errors.role = "Role is required";
+  if (!values.industryId) errors.industryId = "Industry is required";
+
+  return {
+    values: values,
+    errors,
+  };
+};

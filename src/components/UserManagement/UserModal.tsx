@@ -16,18 +16,30 @@ import { ComboboxDemo } from "../ui/combobox";
 import { useEffect, useState } from "react";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { useForm } from "react-hook-form";
+import { cn, UserForm, userFormResolver } from "@/lib/utils";
+import useSwr from "swr";
+import {
+  createUser,
+  deleteUser,
+  fetcher,
+  getUserDetail,
+  updateUser,
+} from "@/lib/server";
+import { toast } from "sonner";
 
 interface ClientModalProps {
   modelstate: {
     modalType: modalType;
-    data: any;
+    data: string;
   } | null;
   setModelstate: React.Dispatch<
     React.SetStateAction<{
       modalType: modalType;
-      data: any;
+      data: string;
     } | null>
   >;
+  mutate: any;
 }
 
 const getTitleandSubtitle = (modalType?: modalType) => {
@@ -65,7 +77,7 @@ const getTitleandSubtitle = (modalType?: modalType) => {
   }
 };
 
-const UserModal = ({ modelstate, setModelstate }: ClientModalProps) => {
+const UserModal = ({ modelstate, setModelstate, mutate }: ClientModalProps) => {
   const open = Boolean(modelstate);
   const [showPassword, setShowPassword] = useState(false);
   const [{ title, button, subtitle }, setModelData] = useState({
@@ -74,8 +86,69 @@ const UserModal = ({ modelstate, setModelstate }: ClientModalProps) => {
     button: "",
   });
 
+  const { data: industryData } = useSwr("/industry", fetcher);
+
+  const { handleSubmit, formState, register, reset, setValue, watch } =
+    useForm<UserForm>({
+      resolver: userFormResolver,
+    });
+
+  const { errors } = formState as unknown as {
+    errors: { [key: string]: string };
+  };
+
+  const preFillData = async (id: string) => {
+    const { data } = await getUserDetail(id);
+    setValue("name", data.name);
+    setValue("email", data.email);
+    setValue("password", data.password);
+    setValue("phone", data.phone);
+    setValue("address", data.address);
+    setValue("role", data.role);
+    setValue("industryId", data.industry.id);
+  };
+
+  const submitHandler = async (payload: UserForm) => {
+    try {
+      if (modelstate?.modalType === "create") {
+        const data = await createUser(payload);
+        toast.success(data.message);
+      }
+      if (modelstate?.modalType === "edit") {
+        const data = await updateUser(modelstate.data, payload);
+        toast.success(data.message);
+      }
+      mutate();
+      setModelstate(null);
+    } catch (e: any) {
+      const message = e?.response?.data?.message || "Error Occured";
+      toast.error(message);
+    }
+  };
+
+  const deleteHandler = async () => {
+    try {
+      const data = await deleteUser(modelstate?.data || "");
+      toast.success(data.message);
+      mutate();
+      setModelstate(null);
+    } catch (e: any) {
+      const message = e?.response?.data?.message || "Error Occured";
+      toast.error(message);
+    }
+  };
+
   useEffect(() => {
     setModelData(getTitleandSubtitle(modelstate?.modalType));
+
+    if (
+      (modelstate?.modalType === "view" || modelstate?.modalType === "edit") &&
+      modelstate?.data
+    ) {
+      preFillData(modelstate.data);
+    }
+
+    return () => reset();
   }, [modelstate]);
 
   return (
@@ -88,23 +161,53 @@ const UserModal = ({ modelstate, setModelstate }: ClientModalProps) => {
           </CardHeader>
           {modelstate?.modalType !== "delete" && (
             <CardContent>
-              <form className="grid gap-6">
-                <div className="grid gap-4">
+              <form
+                className="grid gap-6"
+                onSubmit={handleSubmit(submitHandler)}>
+                <fieldset
+                  disabled={modelstate?.modalType === "view"}
+                  className="grid gap-4">
                   <div className="grid gap-2">
-                    <Label htmlFor="name">User Name</Label>
-                    <Input id="name" placeholder="Enter user name" />
+                    <Label
+                      htmlFor="name"
+                      className={cn(errors.name && "text-red-500")}>
+                      User Name
+                    </Label>
+                    <Input
+                      id="name"
+                      placeholder="Enter user name"
+                      {...register("name")}
+                    />
+                    <span className="text-red-500 text-sm">{errors?.name}</span>
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="Enter email" />
+                    <Label
+                      htmlFor="email"
+                      className={cn(errors.name && "text-red-500")}>
+                      Email
+                    </Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="Enter email"
+                      {...register("email")}
+                    />
+                    <span className="text-red-500 text-sm">
+                      {errors?.email}
+                    </span>
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="email">Password</Label>
+                    <Label
+                      htmlFor="email"
+                      className={cn(errors.password && "text-red-500")}>
+                      Password
+                    </Label>
                     <div className="relative">
                       <Input
                         id="email"
                         type={showPassword ? "text" : "password"}
                         placeholder="Enter password"
+                        {...register("password")}
                       />
                       <div
                         onClick={() => setShowPassword(!showPassword)}
@@ -112,21 +215,36 @@ const UserModal = ({ modelstate, setModelstate }: ClientModalProps) => {
                         {showPassword ? <IoMdEyeOff /> : <IoMdEye />}
                       </div>
                     </div>
+                    <span className="text-red-500 text-sm">
+                      {errors?.password}
+                    </span>
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="phone">Phone</Label>
+                    <Label
+                      htmlFor="phone"
+                      className={cn(errors.phone && "text-red-500")}>
+                      Phone
+                    </Label>
                     <Input
                       id="phone"
                       type="tel"
                       placeholder="Enter phone number"
+                      {...register("phone")}
                     />
+                    <span className="text-red-500 text-sm">
+                      {errors?.phone}
+                    </span>
                   </div>
                   <div className="grid gap-2">
                     <RadioGroup
-                      // onValueChange={field.onChange}
-                      // value="user"
+                      onValueChange={(value: "admin" | "user") =>
+                        setValue("role", value)
+                      }
+                      value={watch("role")}
                       className="flex flex-col space-y-1">
-                      <Label>User Role</Label>
+                      <Label className={cn(errors.role && "text-red-500")}>
+                        User Role
+                      </Label>
                       <div className="flex items-center space-x-4">
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="admin" id="admin" />
@@ -145,16 +263,26 @@ const UserModal = ({ modelstate, setModelstate }: ClientModalProps) => {
                           </Label>
                         </div>
                       </div>
+                      <span className="text-red-500 text-sm">
+                        {errors?.role}
+                      </span>
                     </RadioGroup>
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="industry">Industry</Label>
+                    <Label
+                      htmlFor="industry"
+                      className={cn(errors.industryId && "text-red-500")}>
+                      Industry
+                    </Label>
                     <ComboboxDemo
-                      options={["1st Options", "2nd Options", "3rd Options"]}
+                      options={industryData}
                       placeholder="Enter industry name"
-                      setValue={() => {}}
-                      value=""
+                      setValue={(value) => setValue("industryId", value)}
+                      value={watch("industryId")}
                     />
+                    <span className="text-red-500 text-sm">
+                      {errors?.industryId}
+                    </span>
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor="address">Address</Label>
@@ -162,22 +290,27 @@ const UserModal = ({ modelstate, setModelstate }: ClientModalProps) => {
                       id="address"
                       rows={3}
                       placeholder="Enter address"
+                      {...register("address")}
                     />
                   </div>
-                </div>
+                  <Button type="submit" className="ml-auto">
+                    {button}
+                  </Button>
+                </fieldset>
               </form>
             </CardContent>
           )}
-          <CardFooter>
-            <Button
-              variant={
-                modelstate?.modalType === "delete" ? "destructive" : "default"
-              }
-              type="submit"
-              className="ml-auto">
-              {button}
-            </Button>
-          </CardFooter>
+          {modelstate?.modalType === "delete" && (
+            <CardFooter>
+              <Button
+                onClick={deleteHandler}
+                variant={"destructive"}
+                type="submit"
+                className="ml-auto">
+                {button}
+              </Button>
+            </CardFooter>
+          )}
         </Card>
       </DialogContent>
     </Dialog>
