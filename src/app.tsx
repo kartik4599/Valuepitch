@@ -9,15 +9,13 @@ import { Toaster } from "sonner";
 import { addProfile } from "./redux/profile-slice";
 import socket from "socket.io-client";
 
-const endpoint = "http://localhost:4500/";
-
 const App = () => {
   const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const socketOperation = (data: any) => {
-    const io = socket(endpoint, { query: { data: JSON.stringify(data) } });
+    const io = socket({ query: { data: JSON.stringify(data) } });
     io.on("update", (profile) => {
       dispatch(addProfile(profile));
     });
@@ -32,9 +30,11 @@ const App = () => {
       const token = localStorage.getItem("token");
       if (!token) return dispatch(logoutUser());
       const { data, profile } = await getMyData();
-      dispatch(loginUser(data));
-      dispatch(addProfile(profile));
-      socketOperation(data);
+      if (data) {
+        dispatch(loginUser(data));
+        socketOperation(data);
+      }
+      if (profile) dispatch(addProfile(profile));
     } catch (e) {
       dispatch(logoutUser());
     }
